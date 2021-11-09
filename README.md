@@ -6,7 +6,7 @@
 cmake .
 make
 ./2dpoint
-dot -Tpng graph.dot > graph.png
+dot -Tpng graph.dot > 2dpoint_graph.png
 ```
 
 <img src="/image/2dpoint.png" width="200"/>
