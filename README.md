@@ -6,5 +6,5 @@
 cmake .
 make
 ./2dpoint
-dot -Tpng graph.dot > graph.png`
+dot -Tpng graph.dot > graph.png
 ```
