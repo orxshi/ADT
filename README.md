@@ -8,3 +8,5 @@ make
 ./2dpoint
 dot -Tpng graph.dot > graph.png
 ```
+
+![Points](/tex/2dpoint.png)
