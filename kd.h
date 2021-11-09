@@ -6,6 +6,7 @@
 #include <map>
 #include <fstream>
 #include <cassert>
+#include <iostream>
 
 namespace Kd
 {
@@ -20,15 +21,14 @@ namespace Kd
     {
         Vector min;
         Vector max;
-        //Dimension(Vector min, Vector max);
     };
 
     struct Object
     {
-        Object(int id, Dimension dim);
+        Object(std::string id, Dimension dim);
         bool overlap(const Object& obj) const;
 
-        int id;
+        std::string id;
         Dimension dim;
     };
 
@@ -41,7 +41,7 @@ namespace Kd
         Node* right;
         Dimension dim;
         int axis;
-        int key;
+        double key;
         int level;
 
         Node(int level, const Object& obj, Dimension dim);
@@ -53,14 +53,16 @@ namespace Kd
     struct Kd
     {
         Node* root;
-        std::map<int, Node*> id_address;
+        std::map<std::string, Node*> id_address;
 
         void init_root(const Input& objects);
-        bool insert(const Object& obj);
+        void init_root(const Input& objects, Dimension dim);
+        void insert(const Object& obj);
         void insert(const Input& objects);
         void dot();
 
         Kd(const Input& objects);
+        Kd(const Input& objects, Dimension dim);
     };
 
 }

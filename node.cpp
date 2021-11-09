@@ -6,7 +6,8 @@ namespace Kd
         left(nullptr),
         right(nullptr),
         level(level),
-        obj(obj)
+        obj(obj),
+        dim(dim)
     {
         axis = level % NDIM;
         key = 0.5 * (dim.min[axis] + dim.max[axis]);
