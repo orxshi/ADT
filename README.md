@@ -9,4 +9,5 @@ make
 dot -Tpng graph.dot > graph.png
 ```
 
-<img src="/tex/2dpoint.png" alt="drawing" width="200"/>
+<img src="/image/2dpoint.png" width="200"/>
+<img src="/image/2dpoint_graph.png" width="200"/>
