@@ -9,4 +9,4 @@ make
 dot -Tpng graph.dot > graph.png
 ```
 
-![Points](/tex/2dpoint.png)
+<img src="/tex/2dpoint.png" alt="drawing" width="200"/>
