@@ -2,14 +2,14 @@
 
 namespace Kd
 {
-    Kd::Kd(const Input& objects):
-        root(nullptr)
-    {
-        init_root(objects);
-        insert(objects);
-    }
+    //Kd::Kd(Input& objects):
+    //    root(nullptr)
+    //{
+    //    init_root(objects);
+    //    insert(objects);
+    //}
 
-    Kd::Kd(const Input& objects, Dimension dim):
+    Kd::Kd(Input& objects, Dimension dim):
         root(nullptr)
     {
         init_root(objects, dim);
@@ -21,6 +21,8 @@ namespace Kd
         //max(max)
     //{
     //}
+    //
+
 
     Dimension bounding_box(const Input& objects)
     {
@@ -38,35 +40,53 @@ namespace Kd
         return dim;
     }
 
-    void Kd::init_root(const Input& objects, Dimension dim)
+    void Kd::init_root(Input& objects, Dimension dim)
     {
-        root = new Node(0, objects.front(), dim);
-        id_address.insert(std::make_pair(objects.front().id, root));
+        root = new Node(0, dim);
+
+        int index = find_median(root->axis, objects);
+        const Object& obj = objects[index];
+        root->obj = obj;
+
+        id_address.insert(std::make_pair(root->obj.id, root));
+
+        objects.erase(objects.begin() + index);
     }
 
-    void Kd::init_root(const Input& objects)
-    {
-        root = new Node(0, objects.front(), bounding_box(objects));
-        id_address.insert(std::make_pair(objects.front().id, root));
-    }
+    //void Kd::init_root(const Input& objects)
+    //{
+    //    root = new Node(0, objects.front(), bounding_box(objects));
+    //    id_address.insert(std::make_pair(objects.front().id, root));
+    //}
 
-    void Kd::insert(const Object& obj)
-    {
-        int count = id_address.count(obj.id);
-        if (count != 0) return;
+    //void Kd::insert(const Object& obj)
+    //{
+    //    int count = id_address.count(obj.id);
+    //    assert(count == 0);
+    //    //if (count != 0) return;
 
-        Node* node = root->insert(obj);
-        if (node != nullptr)
+    //    Node* node = root->insert(objects);
+    //    if (node != nullptr)
+    //    {
+    //        id_address.insert(std::make_pair(obj.id, node));
+    //    }
+    //}
+
+    void Kd::insert(Input& objects)
+    {
+        std::cout << objects.size() << std::endl;
+        while(!objects.empty())
         {
-            id_address.insert(std::make_pair(obj.id, node));
-        }
-    }
+            Node* node = root->insert(objects);
+            std::cout << objects.size() << std::endl;
+            //assert(false);
+            if (node != nullptr)
+            {
+                int count = id_address.count(node->obj.id);
+                assert(count == 0);
 
-    void Kd::insert(const Input& objects)
-    {
-        for (const Object& obj: objects)
-        {
-            insert(obj);
+                id_address.insert(std::make_pair(node->obj.id, node));
+            }
         }
     }
 
@@ -102,4 +122,50 @@ namespace Kd
         out << "}";
         out.close();
     }
+
+    void Kd::print_space()
+    {
+        {
+            std::ofstream out;
+            out.open("quad.txt");
+
+            for (auto m: id_address)
+            {
+                auto node = m.second;
+                if (node == nullptr) continue;
+
+                out << node->dim.min[0];
+                out << " ";
+                out << node->dim.min[1];
+                out << " ";
+                out << node->dim.max[0];
+                out << " ";
+                out << node->dim.max[1];
+                out << "\n";
+            }
+
+            out.close();
+        }
+
+        {
+            std::ofstream out;
+            out.open("vertex.txt");
+
+            for (auto m: id_address)
+            {
+                auto node = m.second;
+                if (node == nullptr) continue;
+
+                out << node->obj.id;
+                out << " ";
+                out << node->obj.dim.min[0];
+                out << " ";
+                out << node->obj.dim.min[1];
+                out << "\n";
+            }
+
+            out.close();
+        }
+    }
+
 }

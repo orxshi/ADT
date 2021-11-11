@@ -4,13 +4,13 @@ using namespace Kd;
 
 int main()
 {
-    Vector A{0.5, 0.5, 0.0};
-    Vector B{0.3, 0.7, 0.0};
-    Vector C{0.6, 0.4, 0.0};
-    Vector D{0.25, 0.1, 0.0};
-    Vector E{0.9, 0.8, 0.0};
-    Vector F{0.2, 0.9, 0.0};
-    Vector G{0.8, 0.3, 0.0};
+    Vector A{0.5, 0.5};
+    Vector B{0.3, 0.7};
+    Vector C{0.6, 0.4};
+    Vector D{0.25, 0.1};
+    Vector E{0.9, 0.8};
+    Vector F{0.2, 0.9};
+    Vector G{0.8, 0.3};
 
     Dimension dim_A{A, A};
     Dimension dim_B{B, B};
@@ -29,13 +29,14 @@ int main()
     input.push_back(Object("F", dim_F));
     input.push_back(Object("G", dim_G));
 
-    Vector box_min{0.0, 0.0, 0.0};
-    Vector box_max{1.0, 1.0, 0.0};
+    Vector box_min{0.0, 0.0};
+    Vector box_max{1.0, 1.0};
 
     Dimension box{box_min, box_max};
 
     Kd::Kd tree(input, box);
     tree.dot();
+    tree.print_space();
 
     return 0;
 }
