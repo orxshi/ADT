@@ -1,6 +1,6 @@
-#include "kd.h"
+#include "kdt.h"
 
-namespace Kd
+namespace Kdt
 {
     //Node::Node(int level, const Object& obj, Dimension dim):
     //    left(nullptr),

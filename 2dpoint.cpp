@@ -1,6 +1,6 @@
-#include "kd.h"
+#include "kdt.h"
 
-using namespace Kd;
+using namespace Kdt;
 
 int main()
 {
@@ -34,7 +34,7 @@ int main()
 
     Dimension box{box_min, box_max};
 
-    Kd::Kd tree(input, box, false);
+    Kdt::Kdt tree(input, box, false);
     tree.dot();
     tree.print_space();
 
