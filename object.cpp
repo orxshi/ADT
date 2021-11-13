@@ -2,7 +2,7 @@
 
 namespace Kd
 {
-    Object::Object(std::string id, Dimension dim): id(id), dim(dim)
+    Object::Object(int id, Dimension dim): id(id), dim(dim)
     {
     }
 

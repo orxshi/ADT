@@ -27,10 +27,10 @@ namespace Kd
     struct Object
     {
         Object() = default;
-        Object(std::string id, Dimension dim);
+        Object(int, Dimension dim);
         bool overlap(const Object& obj) const;
 
-        std::string id;
+        int id;
         Dimension dim;
     };
 
@@ -47,25 +47,25 @@ namespace Kd
         int level;
 
         Node(int level, Dimension dim);
-        Node(int level, Object obj, Dimension dim);
-        Node* insert(Input& objects);
-        bool insert_left(const Object& obj);
-        bool insert_right(const Object& obj);
+        Node(int level, Object obj, Dimension dim, bool median);
+        Node* insert(Input& objects, bool median);
+        bool insert_left(const Object& obj, bool median);
+        bool insert_right(const Object& obj, bool median);
     };
 
     struct Kd
     {
         Node* root;
-        std::map<std::string, Node*> id_address;
+        std::map<int, Node*> id_address;
 
         //void init_root(const Input& objects);
-        void init_root(Input& objects, Dimension dim);
-        void insert(Input& objects);
+        void init_root(Input& objects, Dimension dim, bool median);
+        void insert(Input& objects, bool median);
         void dot();
         void print_space();
 
         //Kd(const Input& objects);
-        Kd(Input& objects, Dimension dim);
+        Kd(Input& objects, Dimension dim, bool median);
     };
 
     int find_median(int axis, Input& objects);

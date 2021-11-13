@@ -21,20 +21,20 @@ int main()
     Dimension dim_G{G, G};
 
     Input input;
-    input.push_back(Object("A", dim_A));
-    input.push_back(Object("B", dim_B));
-    input.push_back(Object("C", dim_C));
-    input.push_back(Object("D", dim_D));
-    input.push_back(Object("E", dim_E));
-    input.push_back(Object("F", dim_F));
-    input.push_back(Object("G", dim_G));
+    input.push_back(Object(0, dim_A));
+    input.push_back(Object(1, dim_B));
+    input.push_back(Object(2, dim_C));
+    input.push_back(Object(3, dim_D));
+    input.push_back(Object(4, dim_E));
+    input.push_back(Object(5, dim_F));
+    input.push_back(Object(6, dim_G));
 
     Vector box_min{0.0, 0.0};
     Vector box_max{1.0, 1.0};
 
     Dimension box{box_min, box_max};
 
-    Kd::Kd tree(input, box);
+    Kd::Kd tree(input, box, false);
     tree.dot();
     tree.print_space();
 

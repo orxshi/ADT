@@ -9,11 +9,11 @@ namespace Kd
     //    insert(objects);
     //}
 
-    Kd::Kd(Input& objects, Dimension dim):
+    Kd::Kd(Input& objects, Dimension dim, bool median):
         root(nullptr)
     {
-        init_root(objects, dim);
-        insert(objects);
+        init_root(objects, dim, median);
+        insert(objects, median);
     }
     
     //Dimension::Dimension(Vector min, Vector max):
@@ -40,17 +40,24 @@ namespace Kd
         return dim;
     }
 
-    void Kd::init_root(Input& objects, Dimension dim)
+    void Kd::init_root(Input& objects, Dimension dim, bool median)
     {
         root = new Node(0, dim);
 
-        int index = find_median(root->axis, objects);
-        const Object& obj = objects[index];
-        root->obj = obj;
-
-        id_address.insert(std::make_pair(root->obj.id, root));
-
-        objects.erase(objects.begin() + index);
+        if (median)
+        {
+            int index = find_median(root->axis, objects);
+            const Object& obj = objects[index];
+            root->obj = obj;
+            id_address.insert(std::make_pair(root->obj.id, root));
+            objects.erase(objects.begin() + index);
+        }
+        else
+        {
+            root->obj = objects.front();
+            id_address.insert(std::make_pair(root->obj.id, root));
+            objects.erase(objects.begin());
+        }
     }
 
     //void Kd::init_root(const Input& objects)
@@ -72,14 +79,11 @@ namespace Kd
     //    }
     //}
 
-    void Kd::insert(Input& objects)
+    void Kd::insert(Input& objects, bool median)
     {
-        std::cout << objects.size() << std::endl;
         while(!objects.empty())
         {
-            Node* node = root->insert(objects);
-            std::cout << objects.size() << std::endl;
-            //assert(false);
+            Node* node = root->insert(objects, median);
             if (node != nullptr)
             {
                 int count = id_address.count(node->obj.id);
