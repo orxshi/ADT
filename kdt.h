@@ -48,9 +48,12 @@ namespace Kdt
 
         Node(int level, Dimension dim);
         Node(int level, Object obj, Dimension dim, bool median);
-        Node* insert(Input& objects, bool median);
-        bool insert_left(const Object& obj, bool median);
-        bool insert_right(const Object& obj, bool median);
+        //Node* insert(Input& objects, bool median);
+        //bool insert_left(const Object& obj, bool median);
+        //bool insert_right(const Object& obj, bool median);
+        Dimension half_dim_left(bool median);
+        Dimension half_dim_right(bool median);
+        void insert(Input objects, std::map<int, Node*>& id_address, bool median);
     };
 
     struct Kdt

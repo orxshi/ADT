@@ -13,7 +13,7 @@ namespace Kdt
         root(nullptr)
     {
         init_root(objects, dim, median);
-        insert(objects, median);
+        root->insert(objects, id_address, median);
     }
     
     //Dimension::Dimension(Vector min, Vector max):
@@ -79,20 +79,20 @@ namespace Kdt
     //    }
     //}
 
-    void Kdt::insert(Input& objects, bool median)
-    {
-        while(!objects.empty())
-        {
-            Node* node = root->insert(objects, median);
-            if (node != nullptr)
-            {
-                int count = id_address.count(node->obj.id);
-                assert(count == 0);
+    //void Kdt::insert(Input& objects, bool median)
+    //{
+    //    while(!objects.empty())
+    //    {
+    //        Node* node = root->insert(objects, median);
+    //        if (node != nullptr)
+    //        {
+    //            int count = id_address.count(node->obj.id);
+    //            assert(count == 0);
 
-                id_address.insert(std::make_pair(node->obj.id, node));
-            }
-        }
-    }
+    //            id_address.insert(std::make_pair(node->obj.id, node));
+    //        }
+    //    }
+    //}
 
     void dot_(std::ofstream& out, Node* node)
     {
