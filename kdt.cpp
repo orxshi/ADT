@@ -95,6 +95,10 @@ namespace Kdt
                 out << node->obj.dim.min[0];
                 out << " ";
                 out << node->obj.dim.min[1];
+                out << " ";
+                out << node->obj.dim.max[0];
+                out << " ";
+                out << node->obj.dim.max[1];
                 out << "\n";
             }
 

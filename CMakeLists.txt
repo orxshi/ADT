@@ -6,4 +6,4 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wreturn-type -Wempty-body -Wno-depr
 
 file(GLOB SOURCES "*.cpp")
 
-add_library(kdt ${SOURCES})
+add_library(kdt SHARED ${SOURCES})
