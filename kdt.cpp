@@ -72,9 +72,13 @@ namespace Kdt
                 out << " ";
                 out << node->dim.min[1];
                 out << " ";
+                out << node->dim.min[2];
+                out << " ";
                 out << node->dim.max[0];
                 out << " ";
                 out << node->dim.max[1];
+                out << " ";
+                out << node->dim.max[2];
                 out << "\n";
             }
 
@@ -96,9 +100,13 @@ namespace Kdt
                 out << " ";
                 out << node->obj.dim.min[1];
                 out << " ";
+                out << node->obj.dim.min[2];
+                out << " ";
                 out << node->obj.dim.max[0];
                 out << " ";
                 out << node->obj.dim.max[1];
+                out << " ";
+                out << node->obj.dim.max[2];
                 out << "\n";
             }
 

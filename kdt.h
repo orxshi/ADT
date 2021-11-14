@@ -11,7 +11,7 @@
 
 namespace Kdt
 {
-    const int NDIM = 2;
+    const int NDIM = 3;
     const double ZERO = 1e-9;
     const double BIG_POS_NUM = 1e9;
     const double BIG_NEG_NUM = -1e9;
