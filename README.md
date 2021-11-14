@@ -45,5 +45,3 @@ Here are the images of the graph and the partitioned space.
 ## TODO
 
 * Search operation will be added in few days
-* The search operation will return possibly multiple objects which overlap the query object.
-* Actual geometric 
