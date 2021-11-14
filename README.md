@@ -1,6 +1,6 @@
 # k-d tree
 
-A k-d tree which can partition three-dimensional space to organize/insert objects. The input object can be a point, rectangle and hexahedron. Insertion of 0D+ objects such as rectangle and hexahedron is managed by changing the cutting axis in cyclic order. The k-d tree in balanced by inserting the median object in each cutting dimension. This kind of k-d tree is also called Alternating Digital Tree.
+A balanced k-d tree which can partition three-dimensional space to organize/insert objects. The input object can be a point, rectangle and hexahedron. Insertion of 0D+ objects such as rectangle and hexahedron is managed by changing the cutting axis in cyclic order. The k-d tree in balanced by inserting the median object in each cutting dimension. This kind of k-d tree is also called Alternating Digital Tree.
 
 The k-d tree stores IDs of the inserted objects. When a query point (can be 0D+ such as hexahedron) is given in search operation, the tree returns possibly multiple IDs of objects which overlap the query point. The user can perform actual geometric tests from thereon.
 
