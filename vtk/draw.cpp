@@ -23,57 +23,67 @@
 #include <vtkLookupTable.h>
 #include <vtkWindowToImageFilter.h>
 #include <vtkPNGWriter.h>
+#include <vtkHexahedron.h>
+#include <vtkAxesActor.h>
+#include <vtkTransform.h>
+#include <vtkUnstructuredGrid.h>
+
 
 vtkNew<vtkNamedColors> colors;
 vtkNew<vtkRenderer> renderer;
 
 struct Polygon
 {
-    vtkSmartPointer<vtkPolyData> polydata;
+    vtkSmartPointer<vtkUnstructuredGrid> ugrid;
     vtkSmartPointer<vtkPoints> points;
     vtkSmartPointer<vtkCellArray> polygons;
-    vtkSmartPointer<vtkPolyDataMapper> pdt_mapper;
+    vtkSmartPointer<vtkDataSetMapper> pdt_mapper;
 
     Polygon()
     {
-        polydata = vtkSmartPointer<vtkPolyData>::New();
+        ugrid = vtkSmartPointer<vtkUnstructuredGrid>::New();
         points = vtkSmartPointer<vtkPoints>::New();
         polygons = vtkSmartPointer<vtkCellArray>::New();
-        pdt_mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+        pdt_mapper = vtkSmartPointer<vtkDataSetMapper>::New();
 
         read();
-        polydata->SetPoints(points);
-        polydata->SetPolys(polygons);
 
-        pdt_mapper->SetInputData(polydata);
+        vtkNew<vtkExtractEdges> edges;
+        edges->SetInputData(ugrid);
+
+        pdt_mapper->SetInputConnection(edges->GetOutputPort());
 
         vtkNew<vtkActor> actor_poly;
         actor_poly->SetMapper(pdt_mapper);
-        actor_poly->GetProperty()->SetRepresentationToSurface();
-        actor_poly->GetProperty()->EdgeVisibilityOn();
-        actor_poly->GetProperty()->SetEdgeColor(1,0,0);
+        actor_poly->GetProperty()->SetColor(colors->GetColor3d("Red").GetData());
 
         renderer->AddActor(actor_poly);
     }
 
-    void make_quad(double xmin, double ymin, double xmax, double ymax)
+    void make_quad(double xmin, double ymin, double zmin, double xmax, double ymax, double zmax)
     {
-        vtkNew<vtkPolygon> polygon;
+        vtkNew<vtkHexahedron> hex;
 
-        points->InsertNextPoint(xmin, ymin, 0.0);
-        points->InsertNextPoint(xmax, ymin, 0.0);
-        points->InsertNextPoint(xmax, ymax, 0.0);
-        points->InsertNextPoint(xmin, ymax, 0.0);
+        points->InsertNextPoint(xmin, ymin, zmin);
+        points->InsertNextPoint(xmax, ymin, zmin);
+        points->InsertNextPoint(xmax, ymax, zmin);
+        points->InsertNextPoint(xmin, ymax, zmin);
 
-        auto size = points->GetNumberOfPoints();
+        points->InsertNextPoint(xmin, ymin, zmax);
+        points->InsertNextPoint(xmax, ymin, zmax);
+        points->InsertNextPoint(xmax, ymax, zmax);
+        points->InsertNextPoint(xmin, ymax, zmax);
 
-        polygon->GetPointIds()->SetNumberOfIds(4);
-        polygon->GetPointIds()->SetId(0, size-4);
-        polygon->GetPointIds()->SetId(1, size-3);
-        polygon->GetPointIds()->SetId(2, size-2);
-        polygon->GetPointIds()->SetId(3, size-1);
+        auto npoint = points->GetNumberOfPoints();
 
-        polygons->InsertNextCell(polygon);
+        int nvertex = 8;
+        for (int i=0; i<nvertex; ++i)
+        {
+            hex->GetPointIds()->SetId(i, npoint - nvertex + i);
+        }
+
+        ugrid->SetPoints(points);
+        ugrid->InsertNextCell(hex->GetCellType(), hex->GetPointIds());
     }
 
     void read()
@@ -83,15 +93,19 @@ struct Polygon
 
         double xmin;
         double ymin;
+        double zmin;
         double xmax;
         double ymax;
+        double zmax;
 
         while(true)
         {
             in >> xmin;
             in >> ymin;
+            in >> zmin;
             in >> xmax;
             in >> ymax;
+            in >> zmax;
 
             if (in.eof())
             {
@@ -99,7 +113,7 @@ struct Polygon
                 break;
             }
 
-            make_quad(xmin, ymin, xmax, ymax);
+            make_quad(xmin, ymin, zmin, xmax, ymax, zmax);
         }
     }
 };
@@ -110,40 +124,47 @@ struct Object
     vtkSmartPointer<vtkIntArray> cell_name;
     vtkSmartPointer<vtkPoints> points;
     vtkSmartPointer<vtkCellArray> cells;
-    vtkSmartPointer<vtkPolyData> polydata;
-    vtkSmartPointer<vtkPolyDataMapper> pdt_mapper;
+    vtkSmartPointer<vtkUnstructuredGrid> ugrid;
+    vtkSmartPointer<vtkDataSetMapper> pdt_mapper;
 
     Object()
     {
         cell_name = vtkSmartPointer<vtkIntArray>::New();
         points = vtkSmartPointer<vtkPoints>::New();
         cells = vtkSmartPointer<vtkCellArray>::New();
-        polydata = vtkSmartPointer<vtkPolyData>::New();
-        pdt_mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+        ugrid = vtkSmartPointer<vtkUnstructuredGrid>::New();
+        pdt_mapper = vtkSmartPointer<vtkDataSetMapper>::New();
 
         get_nobject();
         cell_name->SetNumberOfValues(nobject);
         cell_name->SetName("Name");
 
         read();
-        polydata->SetPoints(points);
-        polydata->SetPolys(cells);
 
-        polydata->GetCellData()->AddArray(cell_name);
+        ugrid->GetCellData()->AddArray(cell_name);
 
-        pdt_mapper->SetInputData(polydata);
+        vtkNew<vtkLookupTable> lut;
+        lut->SetNumberOfTableValues(1);
+        lut->SetTableValue(0, colors->GetColor4d("Black").GetData());
+        lut->Build();
+
+        pdt_mapper->SetLookupTable(lut);
+        pdt_mapper->SetInputData(ugrid);
         pdt_mapper->SetScalarVisibility(1);
         pdt_mapper->SetScalarModeToUseCellData();
         pdt_mapper->GetInput()->GetCellData()->SetActiveScalars("Name");
 
         vtkNew<vtkActor> actor_vert;
         actor_vert->SetMapper(pdt_mapper);
-        actor_vert->GetProperty()->SetRepresentationToSurface();
+        //actor_vert->GetProperty()->SetRepresentationToSurface();
+        actor_vert->GetProperty()->SetRepresentationToWireframe();
         actor_vert->GetProperty()->EdgeVisibilityOn();
-        actor_vert->GetProperty()->SetEdgeColor(0,0,0);
+        actor_vert->GetProperty()->SetEdgeColor(1,0,0);
+        actor_vert->GetProperty()->SetPointSize(10);
+        actor_vert->GetProperty()->SetColor(colors->GetColor3d("Black").GetData());
 
         vtkNew<vtkCellCenters> cc;
-        cc->SetInputData(polydata);
+        cc->SetInputData(ugrid);
 
         vtkNew<vtkLabeledDataMapper> label_mapper;
         label_mapper->SetInputConnection(cc->GetOutputPort());
@@ -164,18 +185,23 @@ struct Object
         in.open("../test/vertex.txt");
 
         int id;
-        double x;
-        double y;
-        double temp;
+        double xmin;
+        double ymin;
+        double zmin;
+        double xmax;
+        double ymax;
+        double zmax;
 
         nobject = 0;
         while(true)
         {
             in >> id;
-            in >> x;
-            in >> y;
-            in >> temp;
-            in >> temp;
+            in >> xmin;
+            in >> ymin;
+            in >> zmin;
+            in >> xmax;
+            in >> ymax;
+            in >> zmax;
 
             if (in.eof())
             {
@@ -195,17 +221,20 @@ struct Object
         int id;
         double xmin;
         double ymin;
+        double zmin;
         double xmax;
         double ymax;
-        double temp;
+        double zmax;
 
         while(true)
         {
             in >> id;
             in >> xmin;
             in >> ymin;
+            in >> zmin;
             in >> xmax;
             in >> ymax;
+            in >> zmax;
 
             if (in.eof())
             {
@@ -213,31 +242,56 @@ struct Object
                 break;
             }
 
-            make_object(id, xmin, ymin, xmax, ymax);
+            make_object(id, xmin, ymin, zmin, xmax, ymax, zmax);
         }
     }
 
-    void make_object(int id, double xmin, double ymin, double xmax, double ymax)
+    void make_object(int id, double xmin, double ymin, double zmin, double xmax, double ymax, double zmax)
     {
-        vtkNew<vtkPolygon> polygon;
+        points->InsertNextPoint(xmin, ymin, zmin);
+        points->InsertNextPoint(xmax, ymin, zmin);
+        points->InsertNextPoint(xmax, ymax, zmin);
+        points->InsertNextPoint(xmin, ymax, zmin);
 
-        points->InsertNextPoint(xmin, ymin, 0.0);
-        points->InsertNextPoint(xmax, ymin, 0.0);
-        points->InsertNextPoint(xmax, ymax, 0.0);
-        points->InsertNextPoint(xmin, ymax, 0.0);
+        points->InsertNextPoint(xmin, ymin, zmax);
+        points->InsertNextPoint(xmax, ymin, zmax);
+        points->InsertNextPoint(xmax, ymax, zmax);
+        points->InsertNextPoint(xmin, ymax, zmax);
 
-        auto size = points->GetNumberOfPoints();
-        auto ncell = cells->GetNumberOfCells();
+        ugrid->SetPoints(points);
 
-        polygon->GetPointIds()->SetNumberOfIds(4);
-        polygon->GetPointIds()->SetId(0, size-4);
-        polygon->GetPointIds()->SetId(1, size-3);
-        polygon->GetPointIds()->SetId(2, size-2);
-        polygon->GetPointIds()->SetId(3, size-1);
+        auto npoint = points->GetNumberOfPoints();
 
-        cells->InsertNextCell(polygon);
+        int nvertex;
+        vtkSmartPointer<vtkObject> hex;
 
-        cell_name->SetValue(ncell, id);
+        if (xmin == xmax && ymin == ymax && zmin == zmax)
+        {
+            nvertex = 1;
+            vtkNew<vtkVertex> hex;
+
+            for (int i=0; i<nvertex; ++i)
+            {
+                hex->GetPointIds()->SetId(i, npoint - nvertex + i);
+            }
+
+            ugrid->InsertNextCell(hex->GetCellType(), hex->GetPointIds());
+        }
+        else
+        {
+            nvertex = 8;
+            vtkNew<vtkHexahedron> hex;
+
+            for (int i=0; i<nvertex; ++i)
+            {
+                hex->GetPointIds()->SetId(i, npoint - nvertex + i);
+            }
+
+            ugrid->InsertNextCell(hex->GetCellType(), hex->GetPointIds());
+        }
+
+        auto ncell = ugrid->GetNumberOfCells();
+        cell_name->SetValue(ncell - 1, id);
     }
 };
 
@@ -250,6 +304,12 @@ int main(int, char*[])
     renderWindow->AddRenderer(renderer);
     vtkNew<vtkRenderWindowInteractor> renderWindowInteractor;
     renderWindowInteractor->SetRenderWindow(renderWindow);
+
+    //vtkNew<vtkTransform> transform;
+    //transform->Translate(1.0, 0.0, 0.0);
+    //vtkNew<vtkAxesActor> axes;
+    //axes->SetUserTransform(transform);
+    //renderer->AddActor(axes);
 
     renderer->SetBackground(colors->GetColor3d("White").GetData());
     renderWindow->SetSize(1000, 1000);
