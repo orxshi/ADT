@@ -44,12 +44,14 @@ struct Polygon
         read();
         polydata->SetPoints(points);
         polydata->SetPolys(polygons);
+
         pdt_mapper->SetInputData(polydata);
 
         vtkNew<vtkActor> actor_poly;
         actor_poly->SetMapper(pdt_mapper);
-        actor_poly->GetProperty()->SetColor(colors->GetColor3d("Black").GetData());
-        actor_poly->GetProperty()->SetRepresentationToWireframe();
+        actor_poly->GetProperty()->SetRepresentationToSurface();
+        actor_poly->GetProperty()->EdgeVisibilityOn();
+        actor_poly->GetProperty()->SetEdgeColor(1,0,0);
 
         renderer->AddActor(actor_poly);
     }
@@ -129,22 +131,16 @@ struct Object
 
         polydata->GetCellData()->AddArray(cell_name);
 
-        vtkNew<vtkLookupTable> lut;
-        lut->SetNumberOfTableValues(1);
-        lut->SetTableValue(0, 0, 0, 0, 1);
-        lut->Build();
-
         pdt_mapper->SetInputData(polydata);
-        pdt_mapper->SetLookupTable(lut);
         pdt_mapper->SetScalarVisibility(1);
         pdt_mapper->SetScalarModeToUseCellData();
         pdt_mapper->GetInput()->GetCellData()->SetActiveScalars("Name");
 
         vtkNew<vtkActor> actor_vert;
         actor_vert->SetMapper(pdt_mapper);
-        actor_vert->GetProperty()->SetPointSize(10);
-        actor_vert->GetProperty()->SetColor(colors->GetColor3d("Black").GetData());
-        actor_vert->GetProperty()->SetRepresentationToWireframe();
+        actor_vert->GetProperty()->SetRepresentationToSurface();
+        actor_vert->GetProperty()->EdgeVisibilityOn();
+        actor_vert->GetProperty()->SetEdgeColor(0,0,0);
 
         vtkNew<vtkCellCenters> cc;
         cc->SetInputData(polydata);
