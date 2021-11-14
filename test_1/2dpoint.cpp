@@ -1,4 +1,4 @@
-#include "kdt.h"
+#include "../kdt.h"
 
 using namespace Kdt;
 

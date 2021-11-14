@@ -4,6 +4,6 @@ project(draw)
 
 find_package(VTK QUIET)
 
-include(${VTK_USE_FILE})
+include_directories(../)
 add_executable(draw MACOSX_BUNDLE draw.cpp)
 target_link_libraries(draw PRIVATE ${VTK_LIBRARIES})
