@@ -320,11 +320,11 @@ int main(int, char*[])
     vtkNew<vtkWindowToImageFilter> windowToImageFilter;
     windowToImageFilter->SetInput(renderWindow);
     windowToImageFilter->SetScale(1);
-    windowToImageFilter->ReadFrontBufferOff();
+    //windowToImageFilter->ReadFrontBufferOff();
     windowToImageFilter->Update();
 
     vtkNew<vtkPNGWriter> writer;
-    writer->SetFileName("2dquad.png");
+    writer->SetFileName("result.png");
     writer->SetInputConnection(windowToImageFilter->GetOutputPort());
     writer->Write();
 
