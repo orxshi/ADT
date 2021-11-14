@@ -2,28 +2,12 @@
 
 namespace Kdt
 {
-    //Kdt::Kdt(Input& objects):
-    //    root(nullptr)
-    //{
-    //    init_root(objects);
-    //    insert(objects);
-    //}
-
-    Kdt::Kdt(Input& objects, Dimension dim, bool median):
-        root(nullptr)
+    Kdt::Kdt(Input& objects, Dimension dim, bool median)
     {
-        init_root(objects, dim, median);
+        root = new Node(0, dim);
         root->insert(objects, id_address, median);
     }
     
-    //Dimension::Dimension(Vector min, Vector max):
-        //min(min),
-        //max(max)
-    //{
-    //}
-    //
-
-
     Dimension bounding_box(const Input& objects)
     {
         Dimension dim;
@@ -39,60 +23,6 @@ namespace Kdt
 
         return dim;
     }
-
-    void Kdt::init_root(Input& objects, Dimension dim, bool median)
-    {
-        root = new Node(0, dim);
-
-        if (median)
-        {
-            int index = find_median(root->axis, objects);
-            const Object& obj = objects[index];
-            root->obj = obj;
-            id_address.insert(std::make_pair(root->obj.id, root));
-            objects.erase(objects.begin() + index);
-        }
-        else
-        {
-            root->obj = objects.front();
-            id_address.insert(std::make_pair(root->obj.id, root));
-            objects.erase(objects.begin());
-        }
-    }
-
-    //void Kdt::init_root(const Input& objects)
-    //{
-    //    root = new Node(0, objects.front(), bounding_box(objects));
-    //    id_address.insert(std::make_pair(objects.front().id, root));
-    //}
-
-    //void Kdt::insert(const Object& obj)
-    //{
-    //    int count = id_address.count(obj.id);
-    //    assert(count == 0);
-    //    //if (count != 0) return;
-
-    //    Node* node = root->insert(objects);
-    //    if (node != nullptr)
-    //    {
-    //        id_address.insert(std::make_pair(obj.id, node));
-    //    }
-    //}
-
-    //void Kdt::insert(Input& objects, bool median)
-    //{
-    //    while(!objects.empty())
-    //    {
-    //        Node* node = root->insert(objects, median);
-    //        if (node != nullptr)
-    //        {
-    //            int count = id_address.count(node->obj.id);
-    //            assert(count == 0);
-
-    //            id_address.insert(std::make_pair(node->obj.id, node));
-    //        }
-    //    }
-    //}
 
     void dot_(std::ofstream& out, Node* node)
     {

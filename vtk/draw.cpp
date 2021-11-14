@@ -21,6 +21,8 @@
 #include <vtkCellCenters.h>
 #include <vtkDoubleArray.h>
 #include <vtkLookupTable.h>
+#include <vtkWindowToImageFilter.h>
+#include <vtkPNGWriter.h>
 
 vtkNew<vtkNamedColors> colors;
 vtkNew<vtkRenderer> renderer;
@@ -237,8 +239,21 @@ int main(int, char*[])
     renderWindowInteractor->SetRenderWindow(renderWindow);
 
     renderer->SetBackground(colors->GetColor3d("White").GetData());
+    renderWindow->SetSize(1000, 1000);
     renderWindow->Render();
-    renderWindowInteractor->Start();
+    //renderWindowInteractor->Start();
+
+    // Screenshot
+    vtkNew<vtkWindowToImageFilter> windowToImageFilter;
+    windowToImageFilter->SetInput(renderWindow);
+    windowToImageFilter->SetScale(1);
+    windowToImageFilter->ReadFrontBufferOff();
+    windowToImageFilter->Update();
+
+    vtkNew<vtkPNGWriter> writer;
+    writer->SetFileName("2dpoint.png");
+    writer->SetInputConnection(windowToImageFilter->GetOutputPort());
+    writer->Write();
 
     return EXIT_SUCCESS;
 }
