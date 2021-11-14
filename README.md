@@ -1,4 +1,4 @@
-# k-d tree
+# kdt
 
 A balanced k-d tree which can partition three-dimensional space to organize/insert objects. The input object can be a point, rectangle and hexahedron. Insertion of 0D+ objects such as rectangle and hexahedron is managed by changing the cutting axis in cyclic order. The k-d tree in balanced by inserting the median object in each cutting dimension. This kind of k-d tree is also called Alternating Digital Tree.
 
