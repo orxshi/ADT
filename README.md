@@ -51,5 +51,5 @@ make
 
 Commands for graph and VTK visualizations are the same as those in Test 1. Search operation is tested with a given target which is a rectangle. The target covers all the objects in the tree. Therefore, all the objects are returned by the search operation. The target and the overlapped object are shown in blue and green, respectively.
 
-<img src="/image/2dquad_graph.png" width="400"/>
+<img src="/image/2dquad_graph.png" width="200"/>
 <img src="/image/2dquad.png" width="500"/>
