@@ -10,7 +10,7 @@ A graph can be produced dot utility.
 
 You can find three tests in tests folder.
 
-## Example: Test 1: Points in 2D space
+## Test 1: Points in 2D space
 
 ```
 cd test
@@ -40,7 +40,7 @@ Here are the images of the graph and the partitioned space. Partitions are shown
 <img src="/image/2dpoint_graph.png" width="400"/>
 <img src="/image/2dpoint.png" width="500"/>
 
-## Example: Test 2: Rectangles in 2D space
+## Test 2: Rectangles in 2D space
 
 ```
 cd test
