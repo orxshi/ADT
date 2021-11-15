@@ -19,20 +19,14 @@ namespace Kdt
         return true;
     }
 
-    std::vector<int> Kdt::search(const Dimension& target)
+    void print_search_result(const std::map<int, Node*>& id_address, std::vector<int> id)
     {
-        std::vector<int> id;
-
-        if (root == nullptr) return id;
-
-        root->search(target, id);
-
         std::ofstream out;
         out.open("search.txt");
 
         for (int i: id)
         {
-            auto node = id_address[i];
+            auto node = id_address.at(i);
 
             out << node->obj.id;
             out << " ";
@@ -50,27 +44,42 @@ namespace Kdt
             out << "\n";
         }
 
-        {
-            std::ofstream out;
-            out.open("target.txt");
+        out.close();
+    }
 
-            out << 99;
-            out << " ";
-            out << target.min[0];
-            out << " ";
-            out << target.min[1];
-            out << " ";
-            out << target.min[2];
-            out << " ";
-            out << target.max[0];
-            out << " ";
-            out << target.max[1];
-            out << " ";
-            out << target.max[2];
-            out << "\n";
+    void print_target(const Dimension& target)
+    {
+        std::ofstream out;
+        out.open("target.txt");
 
-            out.close();
-        }
+        out << 99;
+        out << " ";
+        out << target.min[0];
+        out << " ";
+        out << target.min[1];
+        out << " ";
+        out << target.min[2];
+        out << " ";
+        out << target.max[0];
+        out << " ";
+        out << target.max[1];
+        out << " ";
+        out << target.max[2];
+        out << "\n";
+
+        out.close();
+    }
+
+    std::vector<int> Kdt::search(const Dimension& target)
+    {
+        std::vector<int> id;
+
+        if (root == nullptr) return id;
+
+        root->search(target, id);
+
+        print_search_result(id_address, id);
+        print_target(target);
 
         return id;
     }
