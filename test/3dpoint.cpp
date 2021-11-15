@@ -1,40 +1,38 @@
 #include "../kdt.h"
+#include <random>
 
 using namespace Kdt;
 
+Input create_3D_points(int n)
+{
+    Input input;
+
+    for (int i=0; i<n; ++i)
+    {
+        srand(i+1);
+        float x = (float)rand() / (float)RAND_MAX;
+        float y = (float)rand() / (float)RAND_MAX;
+        float z = (float)rand() / (float)RAND_MAX;
+
+        Vector v = {x, y, z};
+        Dimension d = {v, v};
+
+        input.push_back(Object(i, d));
+    }
+
+    return input;
+}
+
 int main()
 {
-    Vector A{0.5, 0.5, 0.4};
-    Vector B{0.3, 0.7, 0.7};
-    //Vector C{0.6, 0.4, 0.3};
-    //Vector D{0.25, 0.1, 0.4};
-    //Vector E{0.9, 0.8, 0.5};
-    //Vector F{0.2, 0.9, 0.6};
-    //Vector G{0.8, 0.3, 0.7};
-
-    Dimension dim_A{A, B};
-    //Dimension dim_B{B, B};
-    //Dimension dim_C{C, C};
-    //Dimension dim_D{D, D};
-    //Dimension dim_E{E, E};
-    //Dimension dim_F{F, F};
-    //Dimension dim_G{G, G};
-
-    Input input;
-    input.push_back(Object(0, dim_A));
-    //input.push_back(Object(1, dim_B));
-    //input.push_back(Object(2, dim_C));
-    //input.push_back(Object(3, dim_D));
-    //input.push_back(Object(4, dim_E));
-    //input.push_back(Object(5, dim_F));
-    //input.push_back(Object(6, dim_G));
+    auto input = create_3D_points(10);
 
     Vector box_min{0.0, 0.0, 0.0};
     Vector box_max{1.0, 1.0, 1.0};
 
     Dimension box{box_min, box_max};
 
-    Kdt::Kdt tree(input, box, true);
+    Kdt::Kdt tree(input, box, true, 3);
     tree.dot();
     tree.print_space();
 

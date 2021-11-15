@@ -22,7 +22,7 @@ namespace Kdt
         obj(obj),
         dim(dim)
     {
-        axis = level % NDIM;
+        axis = level % n_cutting_dim;
         set_key(median);
     }
 
@@ -32,7 +32,7 @@ namespace Kdt
         level(level),
         dim(dim)
     {
-        axis = level % NDIM;
+        axis = level % n_cutting_dim;
     }
 
     void Node::search(const Dimension& target, std::vector<int>& id)

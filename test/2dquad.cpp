@@ -20,7 +20,7 @@ int main()
 
     Dimension box{box_min, box_max};
 
-    Kdt::Kdt tree(input, box, true);
+    Kdt::Kdt tree(input, box, true, 3);
     tree.dot();
     tree.print_space();
 

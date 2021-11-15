@@ -2,8 +2,11 @@
 
 namespace Kdt
 {
-    Kdt::Kdt(Input& objects, Dimension dim, bool median)
+    int n_cutting_dim;
+
+    Kdt::Kdt(Input& objects, Dimension dim, bool median, int real_ndim)
     {
+        n_cutting_dim = real_ndim;
         root = new Node(0, dim);
         root->insert(objects, id_address, median);
     }
@@ -22,7 +25,7 @@ namespace Kdt
     void print_search_result(const std::map<int, Node*>& id_address, std::vector<int> id)
     {
         std::ofstream out;
-        out.open("search.txt");
+        out.open("search.dat");
 
         for (int i: id)
         {
@@ -50,7 +53,7 @@ namespace Kdt
     void print_target(const Dimension& target)
     {
         std::ofstream out;
-        out.open("target.txt");
+        out.open("target.dat");
 
         out << 99;
         out << " ";
@@ -137,7 +140,7 @@ namespace Kdt
     {
         {
             std::ofstream out;
-            out.open("quad.txt");
+            out.open("quad.dat");
 
             for (auto m: id_address)
             {
@@ -163,7 +166,7 @@ namespace Kdt
 
         {
             std::ofstream out;
-            out.open("vertex.txt");
+            out.open("vertex.dat");
 
             for (auto m: id_address)
             {

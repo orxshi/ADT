@@ -16,6 +16,8 @@ namespace Kdt
     const double BIG_POS_NUM = 1e9;
     const double BIG_NEG_NUM = -1e9;
 
+    extern int n_cutting_dim;
+
     using Vector = std::array<double, NDIM>;
 
     struct Dimension
@@ -63,7 +65,7 @@ namespace Kdt
         void print_space();
         std::vector<int> search(const Dimension& target);
 
-        Kdt(Input& objects, Dimension dim, bool median);
+        Kdt(Input& objects, Dimension dim, bool median, int n_cutting_dim);
     };
 
     int find_median(int axis, Input& objects);
