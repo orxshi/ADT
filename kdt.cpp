@@ -7,6 +7,73 @@ namespace Kdt
         root = new Node(0, dim);
         root->insert(objects, id_address, median);
     }
+
+    bool overlap(Dimension a, Dimension b)
+    {
+        for (int i=0; i<NDIM; ++i)
+        {
+            if ((a.min[i] - b.max[i]) > ZERO) return false;
+            if ((b.min[i] - a.max[i]) > ZERO) return false;
+        }
+
+        return true;
+    }
+
+    std::vector<int> Kdt::search(const Dimension& target)
+    {
+        std::vector<int> id;
+
+        if (root == nullptr) return id;
+
+        root->search(target, id);
+
+        std::ofstream out;
+        out.open("search.txt");
+
+        for (int i: id)
+        {
+            auto node = id_address[i];
+
+            out << node->obj.id;
+            out << " ";
+            out << node->obj.dim.min[0];
+            out << " ";
+            out << node->obj.dim.min[1];
+            out << " ";
+            out << node->obj.dim.min[2];
+            out << " ";
+            out << node->obj.dim.max[0];
+            out << " ";
+            out << node->obj.dim.max[1];
+            out << " ";
+            out << node->obj.dim.max[2];
+            out << "\n";
+        }
+
+        {
+            std::ofstream out;
+            out.open("target.txt");
+
+            out << 99;
+            out << " ";
+            out << target.min[0];
+            out << " ";
+            out << target.min[1];
+            out << " ";
+            out << target.min[2];
+            out << " ";
+            out << target.max[0];
+            out << " ";
+            out << target.max[1];
+            out << " ";
+            out << target.max[2];
+            out << "\n";
+
+            out.close();
+        }
+
+        return id;
+    }
     
     Dimension bounding_box(const Input& objects)
     {

@@ -35,6 +35,19 @@ namespace Kdt
         axis = level % NDIM;
     }
 
+    void Node::search(const Dimension& target, std::vector<int>& id)
+    {
+        if (!overlap(dim, target)) return;
+
+        if (overlap(obj.dim, target))
+        {
+            id.push_back(obj.id);
+        }
+
+        if (left != nullptr) left->search(target, id);
+        if (right != nullptr) right->search(target, id);
+    }
+
     Dimension Node::half_dim_left(bool median)
     {
         Dimension half_dim = dim;

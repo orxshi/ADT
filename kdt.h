@@ -28,7 +28,6 @@ namespace Kdt
     {
         Object() = default;
         Object(int, Dimension dim);
-        bool overlap(const Object& obj) const;
 
         int id;
         Dimension dim;
@@ -51,6 +50,7 @@ namespace Kdt
         Dimension half_dim_left(bool median);
         Dimension half_dim_right(bool median);
         void insert(Input objects, std::map<int, Node*>& id_address, bool median);
+        void search(const Dimension& target, std::vector<int>& id);
         void set_key(bool median);
     };
 
@@ -61,11 +61,13 @@ namespace Kdt
 
         void dot();
         void print_space();
+        std::vector<int> search(const Dimension& target);
 
         Kdt(Input& objects, Dimension dim, bool median);
     };
 
     int find_median(int axis, Input& objects);
+    bool overlap(Dimension a, Dimension b);
 }
 
 #endif

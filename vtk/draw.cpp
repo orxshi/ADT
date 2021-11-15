@@ -126,41 +126,35 @@ struct Object
     vtkSmartPointer<vtkCellArray> cells;
     vtkSmartPointer<vtkUnstructuredGrid> ugrid;
     vtkSmartPointer<vtkDataSetMapper> pdt_mapper;
+    vtkSmartPointer<vtkActor> actor_vert;
+    vtkSmartPointer<vtkActor2D> actor_label;
 
-    Object()
+    Object(std::string filename)
     {
         cell_name = vtkSmartPointer<vtkIntArray>::New();
         points = vtkSmartPointer<vtkPoints>::New();
         cells = vtkSmartPointer<vtkCellArray>::New();
         ugrid = vtkSmartPointer<vtkUnstructuredGrid>::New();
         pdt_mapper = vtkSmartPointer<vtkDataSetMapper>::New();
+        actor_vert = vtkSmartPointer<vtkActor>::New();
+        actor_label = vtkSmartPointer<vtkActor2D>::New();
 
-        get_nobject();
+        get_nobject(filename);
         cell_name->SetNumberOfValues(nobject);
         cell_name->SetName("Name");
 
-        read();
+        read(filename);
 
         ugrid->GetCellData()->AddArray(cell_name);
+        ugrid->GetCellData()->SetActiveScalars("Name");
 
-        vtkNew<vtkLookupTable> lut;
-        lut->SetNumberOfTableValues(1);
-        lut->SetTableValue(0, colors->GetColor4d("Black").GetData());
-        lut->Build();
+        vtkNew<vtkExtractEdges> edges;
+        edges->SetInputData(ugrid);
 
-        pdt_mapper->SetLookupTable(lut);
-        pdt_mapper->SetInputData(ugrid);
-        pdt_mapper->SetScalarVisibility(1);
-        pdt_mapper->SetScalarModeToUseCellData();
-        pdt_mapper->GetInput()->GetCellData()->SetActiveScalars("Name");
+        pdt_mapper->SetInputConnection(edges->GetOutputPort());
+        pdt_mapper->SetScalarVisibility(0);
 
-        vtkNew<vtkActor> actor_vert;
         actor_vert->SetMapper(pdt_mapper);
-        //actor_vert->GetProperty()->SetRepresentationToSurface();
-        actor_vert->GetProperty()->SetRepresentationToWireframe();
-        actor_vert->GetProperty()->EdgeVisibilityOn();
-        actor_vert->GetProperty()->SetEdgeColor(1,0,0);
-        actor_vert->GetProperty()->SetPointSize(10);
         actor_vert->GetProperty()->SetColor(colors->GetColor3d("Black").GetData());
 
         vtkNew<vtkCellCenters> cc;
@@ -172,17 +166,16 @@ struct Object
         label_mapper->GetLabelTextProperty()->SetFontSize(30);
         label_mapper->GetLabelTextProperty()->SetColor(0,0,0);
 
-        vtkNew<vtkActor2D> actor_label;
         actor_label->SetMapper(label_mapper);
 
         renderer->AddActor(actor_vert);
         renderer->AddActor(actor_label);
     }
 
-    void get_nobject()
+    void get_nobject(std::string filename)
     {
         std::ifstream in;
-        in.open("../test/vertex.txt");
+        in.open(filename);
 
         int id;
         double xmin;
@@ -213,10 +206,10 @@ struct Object
         }
     }
 
-    void read()
+    void read(std::string filename)
     {
         std::ifstream in;
-        in.open("../test/vertex.txt");
+        in.open(filename);
 
         int id;
         double xmin;
@@ -297,8 +290,13 @@ struct Object
 
 int main(int, char*[])
 {
-    Object object;
+    Object object("../test/vertex.txt");
     Polygon polygon;
+    Object search("../test/search.txt");
+    search.actor_vert->GetProperty()->SetColor(colors->GetColor3d("Green").GetData());
+    Object target("../test/target.txt");
+    target.actor_vert->GetProperty()->SetColor(colors->GetColor3d("Blue").GetData());
+    renderer->RemoveActor(target.actor_label);
 
     vtkNew<vtkRenderWindow> renderWindow;
     renderWindow->AddRenderer(renderer);

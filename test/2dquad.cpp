@@ -24,5 +24,14 @@ int main()
     tree.dot();
     tree.print_space();
 
+    //Dimension target{Vector{0.05, 0.05}, Vector{0.9, 0.9}};
+    Dimension target{Vector{0.15, 0.15}, Vector{0.4, 0.2}};
+    auto id = tree.search(target);
+    for (auto i: id)
+    {
+        std::cout << "id: " << i << "\n";
+    }
+
+
     return 0;
 }

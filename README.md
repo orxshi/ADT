@@ -17,8 +17,6 @@ cd test
 cmake .
 make
 ./2dpoint
-dot -Tpng graph.dot > graph.png
-display graph.png
 ```
 
 Display the graph with
@@ -37,11 +35,21 @@ make
 ./draw
 ```
 
-Here are the images of the graph and the partitioned space.
+Here are the images of the graph and the partitioned space. Partitions are shown with red color.
 
-<img src="/image/2dpoint_graph.png" width="500"/>
+<img src="/image/2dpoint_graph.png" width="400"/>
 <img src="/image/2dpoint.png" width="500"/>
 
-## TODO
+## Example: Test 2: Rectangles in 2D space
 
-* Search operation will be added in few days
+```
+cd test
+cmake .
+make
+./2dquad
+```
+
+Commands for graph and VTK visualizations are the same as those in Test 1. Search operation is tested with a given target which is a rectangle. The target covers all the objects in the tree. Therefore, all the objects are returned by the search operation. The target and the overlapped object are shown in blue and green, respectively.
+
+<img src="/image/2dquad_graph.png" width="400"/>
+<img src="/image/2dquad.png" width="500"/>
