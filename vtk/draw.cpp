@@ -306,7 +306,7 @@ void set_axis(vtkCaptionActor2D* actor)
 {
     actor->GetCaptionTextProperty()->SetColor(0,0,0);
     actor->GetTextActor()->SetTextScaleModeToNone();
-    actor->GetCaptionTextProperty()->SetFontSize(30);
+    actor->GetCaptionTextProperty()->SetFontSize(20);
 }
 
 vtkSmartPointer<vtkAxesActor> set_axes()
