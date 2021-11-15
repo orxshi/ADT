@@ -4,11 +4,11 @@ A balanced k-d tree which can partition three-dimensional space to organize/inse
 
 The k-d tree stores IDs of the inserted objects. When a query point (can be 0D+ such as hexahedron) is given in search operation, the tree returns possibly multiple IDs of objects which overlap the query point. The user can perform actual geometric tests from thereon.
 
-VTK can be used to visualize the space and objects. Related files are in vtk folder. Note that if the objects to be inserted are points, give option `0` to `./draw 0` to draw points otherwise give any other number such as `./draw 1`.
+VTK can be used to visualize the space and objects. Related files are in the vtk folder. Note that if the objects to be inserted are points, give option `0` to `./draw 0` to draw points otherwise give any other number such as `./draw 1`.
 
-A graph can be produced dot utility.
+A graph can be produced with dot utility.
 
-You can find three tests in tests folder.
+You can find four tests in the test folder.
 
 ## Test 1: Points in 2D space (2dpoint)
 
